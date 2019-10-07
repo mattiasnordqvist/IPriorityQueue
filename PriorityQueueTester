@@ -13,7 +13,7 @@ namespace IPriorityQueue
             Console.Write("Testing...");
             if (priorityQueueFactory().Count() != 0)
             {
-                Console.WriteLine("Error 1: A newly created priority queue should not be empty.");
+                Console.WriteLine("Error 1: A newly created priority queue should be empty.");
                 anyError = true;
             }
             Console.Write(".");
