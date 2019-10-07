@@ -1,0 +1,170 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using PriorityQueue;
+
+namespace IPriorityQueue
+{
+    public class PriorityQueueTester
+    {
+        public static void TestPriorityQueue(Func<IPriorityQueue<int>> priorityQueueFactory, Func<IPriorityQueue<string>> priorityQueueFactory2)
+        {
+            var anyError = false;
+            Console.Write("Testing...");
+            if (priorityQueueFactory().Count() != 0)
+            {
+                Console.WriteLine("Error 1: A newly created priority queue should not be empty.");
+                anyError = true;
+            }
+            Console.Write(".");
+            var sut1 = priorityQueueFactory();
+            sut1.Add(5);
+            Console.Write(".");
+            if (sut1.Count() != 1)
+            {
+                Console.WriteLine("Error 2: The priority queue is not behaving as a priority queue.");
+                anyError = true;
+            }
+
+            sut1.Pop();
+            if (sut1.Count() != 0)
+            {
+                Console.WriteLine("Error 3: The priority queue is not behaving as a priority queue.");
+                anyError = true;
+            }
+            Console.Write(".");
+            var sut2 = priorityQueueFactory();
+            sut2.Add(5);
+            var actual = sut2.Pop();
+            if (actual != 5)
+            {
+                Console.WriteLine("Error 4: The priority queue is not behaving as a priority queue.");
+                anyError = true;
+            }
+            Console.Write(".");
+            sut2.Add(5);
+            sut2.Add(2);
+            if (sut2.Peek() != 2 || sut2.Count() != 2)
+            {
+                Console.WriteLine("Error 5: The priority queue is not behaving as a priority queue.");
+                anyError = true;
+            }
+            Console.Write(".");
+            if (sut2.Pop() != 2 || sut2.Pop() != 5)
+            {
+                Console.WriteLine("Error 6: The priority queue is not behaving as a priority queue.");
+                anyError = true;
+            }
+            Console.Write(".");
+
+            var sutString = priorityQueueFactory2();
+            sutString.Add("b");
+            sutString.Add("a");
+
+            var popA = sutString.Pop();
+            var popB = sutString.Pop();
+            if (popA != "a" || popB != "b")
+            {
+                Console.WriteLine("Error 7: The priority queue is not behaving as a priority queue.");
+                anyError = true;
+            }
+            Console.Write(".");
+
+            sutString = priorityQueueFactory2();
+            Exception e = null;
+            try
+            {
+                sutString.Pop();
+            }
+            catch (InvalidOperationException m)
+            {
+                e = m;
+            }
+            if (e == null)
+            {
+                Console.WriteLine("Error 8: It should not be possible to pop an empty queue.");
+                anyError = true;
+            }
+            Console.Write(".");
+            try
+            {
+                sutString.Peek();
+            }
+            catch (InvalidOperationException m)
+            {
+                e = m;
+            }
+            if (e == null)
+            {
+                Console.WriteLine("Error 9: It should not be possible to peek an empty queue.");
+                anyError = true;
+            }
+            Console.Write(".");
+            var sut3 = priorityQueueFactory();
+            Random r = new Random();
+            for (int i = 0; i < 10000; i++)
+            {
+                sut3.Add(r.Next(0, i));
+            }
+            var prev = 0;
+            while (sut3.Count() > 0)
+            {
+                var min = sut3.Pop();
+                if (!(min >= prev))
+                {
+                    Console.WriteLine("Error 10: The priority queue is not behaving as a priority queue.");
+                    anyError = true;
+                    break;
+                }
+                prev = min;
+            }
+
+            if (anyError)
+            {
+                return;
+            }
+            Console.Write(".");
+
+            var sut4 = priorityQueueFactory();
+            for (int i = 0; i < 1000000; i++)
+            {
+                sut4.Add(r.Next(0, i));
+            }
+            var now = DateTime.UtcNow;
+            while (sut4.Count() > 0)
+            {
+                sut4.Pop();
+                var then1 = DateTime.UtcNow;
+                if (sut4.Count() % 100000 == 0)
+                {
+                    Console.Write(".");
+                }
+                if (then1 - now > TimeSpan.FromSeconds(10))
+                {
+                    Console.WriteLine("Your datastructure is probably to slow for VG. But you've got G!");
+                }
+            }
+            Console.Write(".");
+
+
+            var pQ = priorityQueueFactory();
+            for (var i = 0; i < 57043858; i++)
+            {
+                if (i % 10000000 == 0)
+                {
+                    Console.Write(".");
+                }
+                pQ.Add(i);
+            }
+            now = DateTime.UtcNow;
+            pQ.Pop();
+            var then = DateTime.UtcNow;
+            if (then - now > TimeSpan.FromSeconds(2))
+            {
+                Console.WriteLine("Your datastructure is probably to slow for VG. But you've got G!");
+            }
+            Console.WriteLine(".");
+            Console.WriteLine("Probably VG! Good job!");
+        }
+    }
+}
