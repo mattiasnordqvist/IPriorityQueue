@@ -8,7 +8,7 @@ namespace PriorityQueue
     /// should give smaller items higher priority. For example, 6 has higher priority than 10, and "a" has higher priority than "c".
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IPriorityQueue<T> where T : IComparable
+    public interface IPriorityQueue<T> where T : IComparable<T>, IComparable
     {
         /// <summary>
         /// Adds a new value to the priority queue
